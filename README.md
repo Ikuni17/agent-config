@@ -1,45 +1,26 @@
 # Codex configuration
 
-This private repository is the source of truth for the global Codex instructions and custom agent definitions in `codex/`.
-
 Codex reads these absolute symlinks:
 
-- `/Users/brad/.codex/AGENTS.md` → `/Users/brad/codex-config/codex/AGENTS.md`
-- `/Users/brad/.codex/agents` → `/Users/brad/codex-config/codex/agents`
+- `/Users/<user>/.codex/AGENTS.md` → `/Users/<user>/codex-config/codex/AGENTS.md`
+- `/Users/<user>/.codex/agents` → `/Users/<user>/codex-config/codex/agents`
 
-Edit either the repository paths or the linked Codex paths, then review and commit the changes here. Start a fresh Codex session after changes so it loads the updated instructions and agent definitions.
+Start a fresh Codex session after changes so it loads the updated instructions and agent definitions. This repository does not change the primary model, concurrency, or other `config.toml` settings.
 
 ## Workflow
 
-The primary agent coordinates the fixed roles in `codex/agents/` for repository changes. When building or revising an issue plan, or working in Plan mode, it follows the planning guidelines and presents an independently validated plan for approval before coding. Otherwise, it acts on proposed changes and comments through coding and proportional local review without a formal plan or extra approval. Questions are answered directly. Each role uses `gpt-6.1-sol`:
+The primary agent coordinates the fixed roles in `codex/agents/` for repository changes and interacts with the developer. See `codex/AGENTS.md` for the orchestration. Tune each role's stable instructions in its TOML definition and keep task-specific facts in assignments.
 
-| Role | Reasoning | Responsibility |
+| Role | Responsibility |
 | --- | --- | --- |
-| `planner` | `xhigh` | Repository exploration and two-section operational plan |
-| `plan_validator` | `high` | Independent scope, integration, and duplication checks |
-| `coder` | `xhigh` | Bounded implementation, reuse, and proportional validation |
-| `code_reviewer` | `xhigh` | Native Codex review plus scope and semantic duplication checks |
-| `finding_validator` | `high` | Verification of original findings and accept/reject decisions |
+| `planner` | Native Codex planner with additional guidance |
+| `plan_validator` | Independent scope, integration, and duplication checks |
+| `coder` | Bounded implementation, reuse, and proportional validation |
+| `code_reviewer` | Native Codex review plus scope and semantic duplication checks |
+| `finding_validator` | Verification of reviewer findings and accept/reject decisions |
 
-The workflow allows three plan corrections, three local correction rounds per cycle, and three Libra correction rounds per PR. Each Libra review's accepted findings form one coder batch, followed by its complete local review cycle and one push. That batch consumes one Libra round and resets only the local counter to round one, leaving two additional local corrections. The Libra count persists across heads.
+Each role uses short bullets grouped by responsibility and links to the shared [Global contract](codex/AGENTS.md#global-contract). The planner reads the live [native Plan-mode guidance](https://github.com/openai/codex/blob/main/codex-rs/collaboration-mode-templates/templates/plan.md); the reviewer reads the live [native review rubric](https://github.com/openai/codex/blob/main/codex-rs/prompts/templates/review/rubric.md). These are bundled defaults; active session instructions take precedence. Reading the sources does not change modes or tools. An unreadable source is reported as a blocker.
 
-Libra is optional: repositories without it can become ready for human review after local review completes, with an explicit local-review outcome. Repositories that use Libra retain the 10-minute wait per head and draft fallback for failed, unavailable, or incomplete reviews; unresolved applicability also preserves the draft. Both completion paths reconcile pending inline focus comments, preserving user comments and areas already reviewed or removed. See `codex/AGENTS.md` for the orchestration and existing PR policies.
+The workflow allows three plan corrections, three local review correction rounds per cycle, and three Libra correction rounds per PR. Each Libra review's accepted findings form one coder batch, followed by its complete local review cycle and one push. That batch consumes one Libra round and resets only the local counter to round one, leaving two additional local corrections. The Libra count persists across heads.
 
-Agent behavior is instruction-driven. Start a fresh session to discover changes; read-only specialist instructions inherit the session's sandbox permissions. This repository does not change the primary model, concurrency, or other `config.toml` settings. Tune each role's stable instructions in its TOML definition and keep task-specific facts in assignments.
-
-Each role uses short bullets grouped by responsibility and links to the shared [Global contract](codex/AGENTS.md#global-contract). The planner reads the live [native Plan-mode guidance](https://github.com/openai/codex/blob/main/codex-rs/collaboration-mode-templates/templates/plan.md); the reviewer reads the live [native review rubric](https://github.com/openai/codex/blob/main/codex-rs/prompts/templates/review/rubric.md). These are bundled defaults; active session instructions take precedence, including the requested two-section final plan and plan-style rules. Reading the sources does not change modes or tools. An unreadable source is reported as a blocker.
-
-The primary agent keeps compact workflow state in conversation across compaction and handoffs. It passes original reviews directly and unchanged to the finding validator, which returns concise accept/reject notes keyed to those findings. Verification notes remain separate from the original review JSON. Custom agents are documented in the [official OpenAI documentation](https://learn.chatgpt.com/docs/agent-configuration/subagents#custom-agents).
-
-## Original backup
-
-The original file and directory are preserved at `/Users/brad/.codex/backups/config-version-control-20261024T001141486716Z`. To restore them, first confirm the two Codex paths are still symlinks, then run:
-
-```sh
-unlink /Users/brad/.codex/AGENTS.md
-unlink /Users/brad/.codex/agents
-mv /Users/brad/.codex/backups/config-version-control-20261024T001141486716Z/AGENTS.md /Users/brad/.codex/AGENTS.md
-mv /Users/brad/.codex/backups/config-version-control-20261024T001141486716Z/agents /Users/brad/.codex/agents
-```
-
-The remaining `.codex` configuration and session data stay outside this repository.
+Libra is optional: repositories without it can become ready for human review after local review completes, with an explicit local-review outcome. Both completion paths produce pending inline focus comments for the developer. 
