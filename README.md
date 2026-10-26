@@ -11,7 +11,7 @@ Edit either the repository paths or the linked Codex paths, then review and comm
 
 ## Workflow
 
-The primary agent coordinates the fixed roles in `codex/agents/` for repository changes. It presents an independently validated plan for approval, delegates coding, validates review findings, and handles the draft PR and Libra loop. Each role uses `gpt-6.1-sol`:
+The primary agent coordinates the fixed roles in `codex/agents/` for repository changes. Small, clear, low-risk changes proceed through coding and proportional local review without a formal plan or extra approval; questions and suggestions are answered directly. Larger, unclear, architectural, or high-impact work, and explicit plan requests, use an independently validated plan for approval before coding. Each role uses `gpt-6.1-sol`:
 
 | Role | Reasoning | Responsibility |
 | --- | --- | --- |
@@ -21,7 +21,7 @@ The primary agent coordinates the fixed roles in `codex/agents/` for repository 
 | `code_reviewer` | `xhigh` | Native Codex review plus scope and semantic duplication checks |
 | `finding_validator` | `high` | Evidence, severity, and accept/reject/defer decisions |
 
-The workflow allows three plan corrections, three local correction rounds per cycle, and three Libra-driven corrections per PR. Libra waits are capped at 10 minutes per head. The final handoff places review-focus guidance in pending inline GitHub comments for the user to submit. See `codex/AGENTS.md` for the gates, counters, fallback behavior, and existing PR policies.
+The workflow allows three plan corrections, three local correction rounds per cycle, and three Libra-driven corrections per PR. Libra is optional: repositories without it can become ready for human review after local review completes, with an explicit local-review outcome. Repositories that use Libra retain the 10-minute wait per head and draft fallback for failed, unavailable, or incomplete reviews; unresolved applicability also preserves the draft. Both completion paths place review-focus guidance in pending inline GitHub comments for the user to submit. See `codex/AGENTS.md` for applicability checks, gates, counters, fallback behavior, and existing PR policies.
 
 Agent behavior is instruction-driven. Start a fresh session to discover changes; read-only specialist instructions inherit the session's sandbox permissions. This repository does not change the primary model, concurrency, or other `config.toml` settings. Tune each role's stable instructions in its TOML definition and keep task-specific facts in assignments.
 

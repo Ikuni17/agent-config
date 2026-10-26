@@ -4,13 +4,15 @@
 
 # Global workflow
 
-The primary agent owns requirements clarification, orchestration, architecture decisions, approvals, and final synthesis. For every repository change, use the fixed `planner`, `plan_validator`, `coder`, `code_reviewer`, and `finding_validator` roles below. This routing applies only to the primary agent; specialists perform their assigned work directly without recursively running the workflow. Read-only questions use only the roles needed to answer them.
+The primary agent owns requirements clarification, orchestration, architecture decisions, approvals, and final synthesis. For repository changes, use the fixed `planner`, `plan_validator`, `coder`, `code_reviewer`, and `finding_validator` roles according to the task size and rules below. This routing applies only to the primary agent; specialists perform their assigned work directly without recursively running the workflow. Answer questions and suggestions directly, using only the roles needed.
 
-Use each role's installed definition instead of generating a new specialist prompt. Assign task facts: requirements, approved plan, repository, ownership, relevant revisions, validation context, and previous finding dispositions. Tell coders they are not alone, to preserve others' edits, and to report changed files, validation, and remaining risks. Use fresh `code_reviewer`, `plan_validator`, and `finding_validator` instances with `fork_turns="none"`; supply their necessary context explicitly. The role definitions set model and reasoning effort; preserve the primary agent's settings.
+Use each role's installed definition instead of generating a new specialist prompt. Assign task facts: requirements, approved plan when applicable or bounded assignment for small changes, repository, ownership, relevant revisions, validation context, and previous finding dispositions. Tell coders they are not alone, to preserve others' edits, and to report changed files, validation, and remaining risks. Use fresh `code_reviewer`, `plan_validator`, and `finding_validator` instances with `fork_turns="none"`; supply their necessary context explicitly. The role definitions set model and reasoning effort; preserve the primary agent's settings.
 
-Maintain compact state in the conversation: plan version and approval, base and current revision, plan/local/Libra correction counts, finding IDs and dispositions with evidence, and pending review/comment IDs. Preserve this state through compaction and handoffs.
+Maintain compact state in the conversation: selected workflow path, plan version and approval when applicable, base and current revision, plan/local/Libra correction counts, Libra applicability and evidence, finding IDs and dispositions with evidence, and pending review/comment IDs. Preserve this state through compaction and handoffs.
 
 # Planning and approval
+
+Small, clear, low-risk changes with straightforward implementation proceed through a bounded `coder` assignment and proportional local review and validation, without a formal plan, `plan_validator`, or additional user approval. Use the planning steps below for larger, unclear, architectural, or high-impact work, or when the user requests a plan. If a small change grows beyond that scope, reassess and apply the planning steps before expanding the work. Plan-mode restrictions still apply.
 
 1. Clarify the requested outcome and constraints, then delegate repository exploration and planning to `planner`. Planning and analysis roles remain read-only, including in Plan mode; they return their work in messages.
 2. Send the candidate plan to a fresh `plan_validator`. It must independently inspect repository integration points, scope, and semantic duplication. Route material objections to the planner, then validate the revision.
@@ -27,7 +29,7 @@ Plans contain concise operational details about the problem, implementation, ver
 - Challenge parallel execution paths, redundant state and per-layer DTOs, repeated compilation or validation, unnecessary conversions, wrappers, layers, compatibility machinery without an established contract, and test-only abstractions.
 - Verify actual callsites and consumers. Existing tests do not make accidental internal design a requirement. Extend existing fixtures and scenario tables when they cover the same contract.
 - Distinguish necessary domain projections, stage wiring, and independent trust-boundary checks from duplicated responsibilities. Reuse findings need concrete evidence and a safe consolidation or deletion, not merely an equivalent replacement symbol or fewer lines.
-- Keep changes and review fixes within the approved purpose. Review does not authorize unrelated cleanup or broader behavior; send material scope or design changes back through planning and approval.
+- Keep changes and review fixes within the requested purpose. Review does not authorize unrelated cleanup or broader behavior; reassess material scope or design changes under the planning and approval rules.
 
 # Implementation and local review
 
@@ -41,15 +43,17 @@ Local review is complete when no accepted material findings remain. The primary 
 
 # Draft PR and Libra
 
-After local review completes, create a draft PR using the PR policies below. Read the repository's Libra settings and ensure configured required labels and a draft-bypass label are applied when needed for draft eligibility. Respect configured eligibility and handle a missing integration as unavailable. After creating a PR, attach its HTTPS URL to the task when the attachment tool is available.
+After local review completes, create a draft PR using the PR policies below. After creating a PR, attach its HTTPS URL to the task when the attachment tool is available.
 
-Poll the commit-status context `Libra` for the exact current PR head SHA and inspect its corresponding review result and comments. A successful status can contain findings. Include older feedback that still applies; exclude superseded runs from completion decisions. Use repository integration details to match the review to its head and status; do not claim a clean result when the match is uncertain.
+Libra is optional. Before polling, make a bounded applicability check using repository instructions, settings, required checks, and available current or recent integration evidence. Use local review alone when optional Libra is explicitly disabled or discovery finds no Libra configuration, requirement, or integration evidence. Record the selected path and evidence. A missing status on the current head alone does not disable a known configured integration. Inaccessible or conflicting evidence leaves applicability unresolved and produces a caveated draft handoff.
 
-Wait at most **10 minutes per head**, measuring from the first poll for that head and retaining the deadline across resumptions and repeated polls. Use bounded waits of at most 60 seconds and continue concise progress updates. Missing integration, unavailable results, review failures, or incomplete results at the deadline produce a locally reviewed handoff with an explicit Libra caveat; never present these as a clean Libra review.
+When Libra applies, read its repository settings and ensure configured required labels and a draft-bypass label are applied when needed for draft eligibility. Respect configured eligibility and required review policies. Poll the commit-status context `Libra` for the exact current PR head SHA and inspect its corresponding review result and comments. A successful status can contain findings. Include older feedback that still applies; exclude superseded runs from completion decisions. Use repository integration details to match the review to its head and status; do not claim a clean result when the match is uncertain.
+
+Wait at most **10 minutes per head** when Libra applies, measuring from the first poll for that head and retaining the deadline across resumptions and repeated polls. Use bounded waits of at most 60 seconds and continue concise progress updates. Unavailable results, review failures, or incomplete results at the deadline produce a locally reviewed draft handoff with an explicit Libra caveat; never present these as a clean Libra review.
 
 Send Libra findings through `finding_validator`, route accepted findings to `coder`, complete another local review cycle, push, and inspect Libra for the updated head. Count each Libra-driven coder fix batch as one Libra correction round, separately from local rounds. Allow at most three Libra correction rounds per PR. If accepted material findings remain after the third, stop before a fourth and ask for intervention. Preserve counters when a head changes. Leave Libra review-thread replies and resolution to Libra.
 
-A completed Libra review is settled when no accepted material findings remain; documented rejections or deferrals can remain. Mark a settled PR ready, verify its published state and latest Libra activity, then prepare the pending focus comments. On the unavailable/failed/incomplete fallback, preserve the draft and report the caveat. On escalation, preserve the current PR state and report the remaining accepted findings.
+A completed Libra review is settled when no accepted material findings remain; documented rejections or deferrals can remain. After completed local review with Libra absent or explicitly disabled, or a settled Libra review, mark the PR ready, verify its published state and any applicable latest Libra activity, then prepare the pending focus comments. When Libra was expected but unavailable, failed, or incomplete, or its applicability remains unresolved, preserve the draft and report the caveat. On escalation, preserve the current PR state and report the remaining accepted findings.
 
 # Pending focus comments and handoff
 
@@ -59,7 +63,7 @@ Use `gh api` to group focus comments in one **pending** review under the user's 
 
 Preserve an existing pending review and all user comments. Append missing focus comments with GraphQL `addPullRequestReviewThread` using its `pullRequestReviewId`; use the review's node ID. Reconcile existing focus comments by their content and anchors before retries to prevent duplicates. Re-read the PR head immediately before creating comments; if it changed, reconcile anchors and review state first. Read back the review and comments to verify **PENDING** state, count, bodies, and anchors. Never submit the pending review. If GitHub rejects the operation, preserve existing drafts and report the limitation.
 
-The final handoff contains the normal HTTPS PR link, validation results, Libra outcome, material caveats, and confirmation that the focus comments are waiting in a pending review. Keep the focus guidance in those inline comments instead of a chat focus list. Report any unavailable comments or checks honestly.
+The final handoff contains the normal HTTPS PR link, validation results, selected review path and Libra outcome, material caveats, and confirmation that the focus comments are waiting in a pending review. State when Libra was not configured, not detected, or explicitly disabled and local review was used. Keep the focus guidance in those inline comments instead of a chat focus list. Report any unavailable comments or checks honestly.
 
 # PR creation
 - Always use "Closes #<issue>" in the PR description, unless the PR does not 
