@@ -25,7 +25,7 @@ The workflow allows three plan corrections, three local correction rounds per cy
 
 Agent behavior is instruction-driven. Start a fresh session to discover changes; read-only specialist instructions inherit the session's sandbox permissions. This repository does not change the primary model, concurrency, or other `config.toml` settings. Tune each role's stable instructions in its TOML definition and keep task-specific facts in assignments.
 
-The code reviewer embeds the native reviewer prompt from Codex CLI `0.163.0-alpha.11.2`. Its TOML comments record the installed source, exact extraction markers, length, and SHA256. Preserve that parsed instruction prefix byte-for-byte when tuning additions; verify the provenance when updating the native baseline. Custom agents are documented in the [official OpenAI documentation](https://learn.chatgpt.com/docs/agent-configuration/subagents#custom-agents).
+Each role uses short bullet points grouped by responsibility. The code reviewer reads the current [native Codex review rubric](https://github.com/openai/codex/blob/main/codex-rs/prompts/templates/review/rubric.md) before each review and applies the global scope and reuse checks alongside it. Source access is required; the reviewer reports a blocker if it cannot read the rubric. Custom agents are documented in the [official OpenAI documentation](https://learn.chatgpt.com/docs/agent-configuration/subagents#custom-agents).
 
 ## Original backup
 
