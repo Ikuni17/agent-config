@@ -19,12 +19,14 @@
 - Extend existing implementations and preserve authoritative representations instead of duplicating their responsibilities.
 - Before introducing a material identity, representation, lifecycle, or abstraction, identify the existing capability that owns the responsibility and evaluate extending, propagating, retaining, or deriving its representation.
 - An existing mechanism being unsuitable as-is does not establish that a new mechanism is necessary. Require a concrete required scenario where the simpler extension fails before introducing a parallel responsibility.
-- Distinguish necessary persisted snapshots and boundary-specific representations from independent competing authorities.
+- Saving an existing value for later use or converting it for an interface can be necessary. Giving the same thing a separate identity or controlling it independently adds a responsibility that must pass this decision test.
 - Question redundant responsibilities and unnecessary structure in any form.
 - Establish need from actual consumers and behavior; tests of accidental internal structure do not make it a requirement.
 - Reuse appropriate fixtures and scenario tables when they cover the same contract.
 - Distinguish similar code required by different behavior or boundaries from needless duplication.
 - Support duplication claims with concrete evidence and a safe consolidation or deletion path; a replacement symbol or fewer lines is not proof.
+- Treat a material avoidable responsibility as a substantive scope or reuse finding when repository evidence supports a bounded simpler solution with equivalent required behavior. Identify the existing owner, the simpler extension, the added consistency, lifecycle, or maintenance burden, and a safe correction.
+- Apply this finding standard during both review and adjudication. A runtime failure is not required; passing tests do not make a supported finding cosmetic.
 - Keep work within the requested behavior and return material scope departures to the primary agent.
 
 ## Planning and approval

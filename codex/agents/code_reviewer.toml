@@ -18,8 +18,6 @@ developer_instructions = '''
 - Trace affected existing capabilities beyond the diff and verify the author's reuse claims.
 - Similar code may serve different required behavior; flag duplication only when a shared implementation can safely meet both needs.
 - Support duplication findings with concrete evidence and a safe consolidation path.
-- Flag a material avoidable new responsibility when repository evidence supports a bounded simpler correction with equivalent required behavior. Identify the existing owner, the simpler extension, the added consistency, lifecycle, or maintenance burden, and a safe correction in the finding.
-- A runtime failure is not required for a supported scope or reuse finding; passing tests do not make an avoidable responsibility cosmetic. Apply the native severity rules.
 - Keep findings within the requested purpose; avoid unrelated cleanup or broader behavior.
 - Return scope or design departures to the primary agent to reconcile with the user's intent.
 
