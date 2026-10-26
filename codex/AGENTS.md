@@ -10,12 +10,12 @@
 - Preserve the primary agent's settings; role definitions set specialist models and reasoning.
 - For issue planning or Plan mode, use the planning flow; otherwise act on user changes and comments through `coder` and local review without a formal plan or extra approval. Answer questions directly.
 
-# Task context
+## Task context
 
 - Keep compact state in conversation: requirements or assignment, any plan version and approval, base and current revisions, correction counters, Libra applicability and deadline, accepted/rejected findings, and pending review IDs.
 - Preserve this state through compaction and handoffs. Pass original reviews directly and unchanged; keep verification notes separate from the original JSON and findings.
 
-# Global contract
+## Global contract
 
 - Choose the smallest scoped design that satisfies the requested behavior and applicable repository instructions.
 - Trace existing capability owners, callers, and consumers through the relevant interfaces and trust boundaries.
@@ -28,7 +28,7 @@
 - Support duplication claims with concrete evidence and a safe consolidation or deletion path; a replacement symbol or fewer lines is not proof.
 - Keep work within the requested behavior and return material scope departures to the primary agent.
 
-# Planning and approval
+## Planning and approval
 
 1. Clarify the requested outcome and delegate exploration and planning to `planner`.
 2. Send the returned plan to a fresh `plan_validator`.
@@ -36,7 +36,7 @@
 4. Present the planner's validated result as returned; do not author or reformat it. Use the required `<proposed_plan>` wrapper in Plan mode and obtain approval before implementing the plan. Plan-mode restrictions apply until the mode changes.
 5. Route user plan corrections to `planner` and update the actual plan in the same turn. Material revisions return through fresh validation and approval; routine in-scope file assignments can change without reopening approval.
 
-# Implementation and local review
+## Implementation and local review
 
 1. Assign implementation to `coder`, then send the complete change and validation context to a fresh `code_reviewer`.
 2. Pass the original review directly and unchanged to a fresh `finding_validator`.
@@ -44,7 +44,7 @@
 4. Allow three local correction rounds per cycle. One round is a complete coder fix batch followed by review and finding validation. Each Libra fix batch resets only the local counter and starts a new local cycle at round one, leaving at most two additional local correction batches. Stop before a fourth round if accepted material findings remain; preserve the work and PR state for user intervention.
 5. When no accepted material findings remain, perform final integration checks before publication.
 
-# Draft PR and Libra
+## Draft PR and Libra
 
 - After local review, create a draft PR under the PR policies below and attach its HTTPS URL to the task when supported.
 - Libra is optional. Make a bounded applicability check using repository instructions, settings, required checks, and current or recent integration evidence. Use local review alone when optional Libra is explicitly disabled or none is detected. A missing status alone never disables a known integration; record applicability and evidence.
@@ -55,7 +55,7 @@
 - Mark the PR ready after completed local-only review or a settled Libra review with no accepted material findings. Verify the published state and latest applicable Libra activity before preparing focus comments.
 - Preserve the draft with an explicit caveat when applicability is unresolved or expected Libra results fail, are unavailable, or remain incomplete at the deadline. Preserve the current PR state on correction-limit escalation.
 
-# Pending focus comments and handoff
+## Pending focus comments and handoff
 
 1. Identify meaningful areas for the user's judgment on the current diff. Skip areas the user has already reviewed or removed; do not recreate their focus comments.
 2. Read the current head and the user's pending review. Reuse it or create one if absent, preserve all user comments, and add only missing focus comments with valid diff anchors. If the head changes, reconcile again before writing.
