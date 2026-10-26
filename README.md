@@ -1,9 +1,9 @@
-# Codex configuration
+# Agent configuration
 
 Codex reads these absolute symlinks:
 
-- `/Users/<user>/.codex/AGENTS.md` → `/Users/<user>/codex-config/codex/AGENTS.md`
-- `/Users/<user>/.codex/agents` → `/Users/<user>/codex-config/codex/agents`
+- `/Users/<user>/.codex/AGENTS.md` → `/Users/<user>/agent-config/codex/AGENTS.md`
+- `/Users/<user>/.codex/agents` → `/Users/<user>/agent-config/codex/agents`
 
 Start a fresh Codex session after changes so it loads the updated instructions and agent definitions. This repository does not change the primary model, concurrency, or other `config.toml` settings.
 
