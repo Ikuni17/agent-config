@@ -11,6 +11,26 @@ Start a fresh Codex session after changes so it loads the updated instructions a
 
 The primary agent coordinates the fixed roles in `codex/agents/` for repository changes and interacts with the developer. See `codex/AGENTS.md` for the orchestration. Tune each role's stable instructions in its TOML definition and keep task-specific facts in assignments.
 
+```mermaid
+flowchart TD
+    Main[Primary agent] -->|Issue plan / Plan mode| Planner[planner]
+    Main -->|Direct change| Coder[coder]
+    Planner --> PlanCheck[plan_validator]
+    PlanCheck -->|Revise| Planner
+    PlanCheck -->|Accept| Approval[Developer approval]
+    Approval --> Coder
+    Coder --> Review[code_reviewer] --> LocalCheck[finding_validator]
+    LocalCheck -->|Accepted findings: one batch| Coder
+    LocalCheck -->|None accepted| PR[Create draft PR / push update]
+    PR --> UseLibra{Libra?}
+    UseLibra -->|Not used| Ready[Ready + pending focus comments]
+    UseLibra -->|Applies| Libra[Libra review]
+    Libra --> LibraCheck[finding_validator]
+    LibraCheck -->|Accepted findings: one batch| Coder
+    LibraCheck -->|None accepted| Ready
+    Libra -->|Failed / unavailable / timeout| Draft[Draft handoff + caveat]
+```
+
 | Role | Responsibility |
 | --- | --- | --- |
 | `planner` | Native Codex planner with additional guidance |
