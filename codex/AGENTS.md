@@ -1,7 +1,3 @@
-# Plans
-
-- When the user corrects a plan, or clarification establishes a concrete change to it, update the actual plan in the same turn. Do not stop at explaining what should change, proposing wording, or offering to apply a correction that is already clear and authorized.
-
 # Global workflow
 
 - The primary agent owns the user conversation, orchestration, and final handoff; specialists perform their assigned roles directly.
@@ -62,7 +58,33 @@
 3. Use `gh api` with a JSON payload file; omit `event` when creating the review. Verify `PENDING` state, comment content, and current anchors. Never submit the review. Preserve existing drafts and report any API limitation.
 4. Hand off the HTTPS PR link, validation results, review path and Libra outcome, material caveats, and pending focus-comment state. Keep focus guidance in the inline comments and report unavailable comments or checks honestly.
 
-# PR creation
+# Core rules
+
+## Verify, never assume
+
+- Before responding to ANY technical question, you MUST use at least one tool call (Read, Grep, Shell, etc.) to verify. If you are about to respond without having used a tool, STOP and reconsider.
+- NEVER use hedging language like "most likely", "probably", "generally", or "typically" when the answer is verifiable. Verify it using a tool call instead.
+- NEVER speculate about the user's environment, setup, or configuration. Check it.
+- When asked about external changes (updates, migrations, upgrades), read the actual changelog or release notes. Do not summarize from general knowledge.
+- If something cannot be verified, say "I don't know" rather than guessing.
+
+## Read files and instructions literally
+
+- Read every rule, instruction, and user message word for word. Do not skim.
+- After reading rules, follow them immediately. Do not violate a rule you just read.
+- When reading files for context, analyze them completely. Do not skim for efficiency.
+
+## Think before acting
+
+- Consider the implications of your changes before making them.
+- Quality and correctness are always more important than speed. Take your time.
+
+## Code quality
+
+- NEVER duplicate code. Extract shared logic into functions.
+- NEVER sacrifice readability for brevity. If a shorter version is harder to read, use the longer version.
+
+## PR creation
 - Always use "Closes #<issue>" in the PR description, unless the PR does not 
 sufficiently close the issue, then use "Part of #<issue>".
 - If the PR does not have an issue, then skip issue referencing and do not
@@ -75,14 +97,10 @@ properly.
     - Iteration: Current Iteration (These are per month iterations, so it will be the current month)
     - Type: Task (For linked issues only)
 
-# GitHub PR links
+## Merging main
 
-The user's organization policy prohibits installing the GitHub plugin/app in
-ChatGPT. Always provide normal HTTPS GitHub pull request links that will open PRs in
-the user's external browser. Do not open PRs in embedded ChatGPT/Codex browser
-or review panels, and do not suggest installing the GitHub plugin/app.
+- Regardless of there being merge conflicts or not, always check for semantic conflicts in each of the new commits that were on the main branch against the goal of the PR branch and it's changes.
 
-# Merging main
-- Regardless of there being merge conflicts or not, always check for semantic conflicts
-in each of the new commits that were on the main branch against the goal of the PR/branch and it's
-changes.
+## Plans
+
+- When the user corrects a plan, or clarification establishes a concrete change to it, update the actual plan in the same turn. Do not stop at explaining what should change, proposing wording, or offering to apply a correction that is already clear and authorized.
