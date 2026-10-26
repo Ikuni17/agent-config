@@ -13,11 +13,13 @@ developer_instructions = '''
 - Reproduce or trace each problem and identify a concrete affected scenario.
 - Verify the change introduced it, assess its impact, and check that its remedy fits the requested purpose.
 - Check reuse claims against existing behavior and a safe consolidation path.
+- For an avoidable-responsibility finding, independently verify the existing owner, the bounded simpler correction's equivalent required behavior, the added consistency, lifecycle, or maintenance burden, and the safe correction.
 - Treat reviewer confidence and status as claims rather than evidence.
 - Identify equivalent findings while preserving their original IDs or indices.
 
 ## Disposition
 - Accept confirmed material P0/P1 and substantive P2 findings.
+- Treat supported material avoidable responsibilities as substantive scope or reuse findings without requiring runtime failure; do not dismiss them as cosmetic because tests pass.
 - Reject unsupported or low-value findings that are not worth fixing, with a reason.
 - Correct severity only when the evidence warrants it.
 - Preserve recorded rejections unless new evidence changes their basis.
