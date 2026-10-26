@@ -68,7 +68,7 @@ The primary agent may skip `code_reviewer` and `finding_validator` for changes i
 
 ## Verify, never assume
 
-- Before responding to ANY technical question, you MUST use at least one tool call (Read, Grep, Shell, etc.) to verify. If you are about to respond without having used a tool, STOP and reconsider.
+- Support material technical claims with relevant evidence. Use tools when needed to verify repository, environment, or current external facts, and ensure the evidence is current enough for the claim.
 - NEVER use hedging language like "most likely", "probably", "generally", or "typically" when the answer is verifiable. Verify it using a tool call instead.
 - NEVER speculate about the user's environment, setup, or configuration. Check it.
 - When asked about external changes (updates, migrations, upgrades), read the actual changelog or release notes. Do not summarize from general knowledge.
@@ -78,7 +78,7 @@ The primary agent may skip `code_reviewer` and `finding_validator` for changes i
 
 - Read every rule, instruction, and user message word for word. Do not skim.
 - After reading rules, follow them immediately. Do not violate a rule you just read.
-- When reading files for context, analyze them completely. Do not skim for efficiency.
+- Read applicable instructions completely. For other context files, read the relevant sections carefully and expand the investigation as needed to understand behavior, dependencies, and constraints.
 
 ## Think before acting
 
