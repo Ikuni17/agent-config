@@ -21,13 +21,13 @@ flowchart TD
     Approval --> Coder
     Coder --> Review[code_reviewer] --> LocalCheck[finding_validator]
     LocalCheck -->|Accepted findings: one batch| Coder
-    LocalCheck -->|None accepted| PR[Create draft PR / push update]
+    LocalCheck -->|No findings| PR[Create draft PR / push update]
     PR --> UseLibra{Libra?}
     UseLibra -->|Not used| Ready[Ready + pending focus comments]
     UseLibra -->|Applies| Libra[Libra review]
     Libra --> LibraCheck[finding_validator]
     LibraCheck -->|Accepted findings: one batch| Coder
-    LibraCheck -->|None accepted| Ready
+    LibraCheck -->|No findings| Ready
     Libra -->|Failed / unavailable / timeout| Draft[Draft handoff + caveat]
 ```
 
