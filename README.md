@@ -11,7 +11,7 @@ Edit either the repository paths or the linked Codex paths, then review and comm
 
 ## Workflow
 
-The primary agent coordinates the fixed roles in `codex/agents/` for repository changes. Small, clear, low-risk changes proceed through coding and proportional local review without a formal plan or extra approval; questions and suggestions are answered directly. Larger, unclear, architectural, or high-impact work, and explicit plan requests, use an independently validated plan for approval before coding. Each role uses `gpt-6.1-sol`:
+The primary agent coordinates the fixed roles in `codex/agents/` for repository changes. When building or revising an issue plan, or working in Plan mode, it follows the planning guidelines and presents an independently validated plan for approval before coding. Otherwise, it acts on proposed changes and comments through coding and proportional local review without a formal plan or extra approval. Questions are answered directly. Each role uses `gpt-6.1-sol`:
 
 | Role | Reasoning | Responsibility |
 | --- | --- | --- |

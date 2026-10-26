@@ -4,21 +4,21 @@
 
 # Global workflow
 
-The primary agent owns requirements clarification, orchestration, architecture decisions, approvals, and final synthesis. For repository changes, use the fixed `planner`, `plan_validator`, `coder`, `code_reviewer`, and `finding_validator` roles according to the task size and rules below. This routing applies only to the primary agent; specialists perform their assigned work directly without recursively running the workflow. Answer questions and suggestions directly, using only the roles needed.
+The primary agent owns requirements clarification, orchestration, architecture decisions, approvals, and final synthesis. For repository changes, use the fixed `planner`, `plan_validator`, `coder`, `code_reviewer`, and `finding_validator` roles according to the user's intent, current mode, and rules below. This routing applies only to the primary agent; specialists perform their assigned work directly without recursively running the workflow. Answer questions directly, using only the roles needed.
 
-Use each role's installed definition instead of generating a new specialist prompt. Assign task facts: requirements, approved plan when applicable or bounded assignment for small changes, repository, ownership, relevant revisions, validation context, and previous finding dispositions. Tell coders they are not alone, to preserve others' edits, and to report changed files, validation, and remaining risks. Use fresh `code_reviewer`, `plan_validator`, and `finding_validator` instances with `fork_turns="none"`; supply their necessary context explicitly. The role definitions set model and reasoning effort; preserve the primary agent's settings.
+Use each role's installed definition instead of generating a new specialist prompt. Assign task facts: requirements, approved plan when applicable or bounded assignment for direct changes, repository, ownership, relevant revisions, validation context, and previous finding dispositions. Tell coders they are not alone, to preserve others' edits, and to report changed files, validation, and remaining risks. Use fresh `code_reviewer`, `plan_validator`, and `finding_validator` instances with `fork_turns="none"`; supply their necessary context explicitly. The role definitions set model and reasoning effort; preserve the primary agent's settings.
 
 Maintain compact state in the conversation: selected workflow path, plan version and approval when applicable, base and current revision, plan/local/Libra correction counts, Libra applicability and evidence, finding IDs and dispositions with evidence, and pending review/comment IDs. Preserve this state through compaction and handoffs.
 
 # Planning and approval
 
-Small, clear, low-risk changes with straightforward implementation proceed through a bounded `coder` assignment and proportional local review and validation, without a formal plan, `plan_validator`, or additional user approval. Use the planning steps below for larger, unclear, architectural, or high-impact work, or when the user requests a plan. If a small change grows beyond that scope, reassess and apply the planning steps before expanding the work. Plan-mode restrictions still apply.
+Follow the planning steps below when building or revising an issue plan, or whenever in Plan mode. Otherwise, act on the user's proposed changes and comments through a bounded `coder` assignment and proportional local review and validation, without a formal plan, `plan_validator`, or additional user approval. Select the workflow from the user's intent and current mode. Plan-mode restrictions still apply.
 
 1. Clarify the requested outcome and constraints, then delegate repository exploration and planning to `planner`. Planning and analysis roles remain read-only, including in Plan mode; they return their work in messages.
 2. Send the candidate plan to a fresh `plan_validator`. It must independently inspect repository integration points, scope, and semantic duplication. Route material objections to the planner, then validate the revision.
 3. Allow at most three plan correction rounds, each a planner revision followed by independent validation. Stop and ask for the user's intervention if material objections remain after the third round, before starting a fourth.
 4. Present the validated plan in exactly two sections: **High-level overview** and **Technical details**. In Plan mode, use the required `<proposed_plan>` block. Obtain the user's approval before implementation in both Plan mode and Default mode; approval to a prior plan remains valid. Plan-mode restrictions still apply after approval until the mode changes.
-5. Update the actual plan when the user corrects it. Material changes to behavior, scope, or technical direction return through the planner, validation, and user approval. Routine in-scope reuse adjustments can update file assignments without reopening approval.
+5. Update the actual plan when the user corrects it. Material changes to the plan's behavior, scope, or technical direction return through the planner, validation, and user approval. Routine in-scope reuse adjustments can update file assignments without reopening approval.
 
 Plans contain concise operational details about the problem, implementation, verification, and expected improvements. Technical details include specific integration points by filename, symbol, and intended extension, plus necessary interface changes and acceptance scenarios. Keep investigation history, rejected alternatives, commentary defending the plan, and statements about what will not be done out of the plan.
 
@@ -29,7 +29,7 @@ Plans contain concise operational details about the problem, implementation, ver
 - Challenge parallel execution paths, redundant state and per-layer DTOs, repeated compilation or validation, unnecessary conversions, wrappers, layers, compatibility machinery without an established contract, and test-only abstractions.
 - Verify actual callsites and consumers. Existing tests do not make accidental internal design a requirement. Extend existing fixtures and scenario tables when they cover the same contract.
 - Distinguish necessary domain projections, stage wiring, and independent trust-boundary checks from duplicated responsibilities. Reuse findings need concrete evidence and a safe consolidation or deletion, not merely an equivalent replacement symbol or fewer lines.
-- Keep changes and review fixes within the requested purpose. Review does not authorize unrelated cleanup or broader behavior; reassess material scope or design changes under the planning and approval rules.
+- Keep changes and review fixes within the requested purpose. Review does not authorize unrelated cleanup or broader behavior; return material scope or design departures to the primary agent to reconcile with the user's intent. Apply the planning and approval rules when building or revising a plan.
 
 # Implementation and local review
 
