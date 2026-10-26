@@ -17,19 +17,23 @@
 - Trace existing capability owners, callers, and consumers through the relevant interfaces and trust boundaries.
 - Search by responsibility across the repository, beyond changed or proposed files.
 - Extend existing implementations and preserve authoritative representations instead of duplicating their responsibilities.
+- Before introducing a material identity, representation, lifecycle, or abstraction, identify the existing capability that owns the responsibility and evaluate extending, propagating, retaining, or deriving its representation.
+- An existing mechanism being unsuitable as-is does not establish that a new mechanism is necessary. Require a concrete required scenario where the simpler extension fails before introducing a parallel responsibility.
 - Question redundant responsibilities and unnecessary structure in any form.
 - Establish need from actual consumers and behavior; tests of accidental internal structure do not make it a requirement.
 - Reuse appropriate fixtures and scenario tables when they cover the same contract.
 - Distinguish similar code required by different behavior or boundaries from needless duplication.
 - Support duplication claims with concrete evidence and a safe consolidation or deletion path; a replacement symbol or fewer lines is not proof.
+- Treat a material avoidable responsibility as a substantive scope or reuse finding when repository evidence supports a bounded simpler solution with equivalent required behavior. Identify the existing owner, the simpler extension, the added consistency, lifecycle, or maintenance burden, and a safe correction.
+- Apply this finding standard during both review and adjudication. A runtime failure is not required; passing tests do not make a supported finding cosmetic.
 - Keep work within the requested behavior and return material scope departures to the primary agent.
 
 ## Planning and approval
 
 1. Clarify the requested outcome and delegate exploration and planning to `planner`.
-2. Send the returned plan to a fresh `plan_validator`.
+2. Send the returned plan, original requirements, and the planner's separate investigation handoff for material additions to a fresh `plan_validator`.
 3. Route material objections to `planner`, then send its revision to a fresh `plan_validator`. Allow three correction rounds, each a planner revision followed by validation; ask the user before a fourth if material objections remain.
-4. Present the planner's validated result as returned; do not author or reformat it. Use the required `<proposed_plan>` wrapper in Plan mode and obtain approval before implementing the plan. Plan-mode restrictions apply until the mode changes.
+4. Check the validator's independent decision evidence for every material addition before accepting validation and presenting the planner's result as returned; do not author or reformat it. Use the required `<proposed_plan>` wrapper in Plan mode and obtain approval before implementing the plan. Plan-mode restrictions apply until the mode changes.
 5. Route user plan corrections to `planner` and update the actual plan in the same turn. Material revisions return through fresh validation and approval; routine in-scope file assignments can change without reopening approval.
 
 ## Implementation and local review
@@ -83,7 +87,7 @@ The primary agent may skip `code_reviewer` and `finding_validator` for changes i
 
 ## Code quality
 
-- NEVER duplicate code. Extract shared logic into functions.
+- Reuse existing owners and consolidate shared responsibilities when equivalent required behavior is preserved; retain separate implementations where behavior or boundaries require them.
 - NEVER sacrifice readability for brevity. If a shorter version is harder to read, use the longer version.
 
 ## PR creation
@@ -93,11 +97,11 @@ sufficiently close the issue, then use "Part of #<issue>".
 create an issue. Simply make sure the PR description describe the intent
 properly.
 - Always add Ikuni17 as the assignee for PRs and in-progress issues (not when creating new issues)
-- Set the following for the linked issue or the direct PR when no issue exists (do NOT set these for PRs that also have a linked issue)
+- Verify repository ownership and fork upstream metadata. Only for repositories owned by `elastic` or forks whose upstream repository is owned by `elastic`, set the following for the linked issue or the direct PR when no issue exists (do NOT set these for PRs that also have a linked issue)
     - Project: Apps DX
     - Project Status: In Progress
     - Iteration: Current Iteration (These are per month iterations, so it will be the current month)
-    - Type: Task (For linked issues only)
+- Set Type: Task for linked issues.
 
 ## Merging main
 
