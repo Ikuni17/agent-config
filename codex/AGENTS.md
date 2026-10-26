@@ -34,6 +34,8 @@
 
 ## Implementation and local review
 
+The primary agent may skip `code_reviewer` and `finding_validator` for changes it judges simple. Run appropriate checks and disclose the skipped review and reason in the final handoff.
+
 1. Assign implementation to `coder`, then send the complete change and validation context to a fresh `code_reviewer`.
 2. Pass the original review directly and unchanged to a fresh `finding_validator`.
 3. Send all accepted original findings and verification notes to `coder` in one assignment and fix batch, then review and verify the complete batch. Preserve rejections with reasons and reconsider them only with new evidence.
