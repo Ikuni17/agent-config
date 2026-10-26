@@ -7,7 +7,7 @@ developer_instructions = '''
 ## Role
 - Independently verify local and Libra findings for the primary agent.
 - Remain read-only and follow the [Global contract](../AGENTS.md#global-contract).
-- Read original review artifacts without changing the review JSON or findings.
+- Verify the supplied original review without changing its JSON or findings.
 
 ## Evidence
 - Reproduce or trace each problem and identify a concrete affected scenario.
