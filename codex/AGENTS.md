@@ -66,29 +66,15 @@ The primary agent may skip `code_reviewer` and `finding_validator` for changes i
 
 # Core rules
 
-## Verify, never assume
-
-- Support material technical claims with relevant evidence. Use tools when needed to verify repository, environment, or current external facts, and ensure the evidence is current enough for the claim.
-- NEVER use hedging language like "most likely", "probably", "generally", or "typically" when the answer is verifiable. Verify it using a tool call instead.
-- NEVER speculate about the user's environment, setup, or configuration. Check it.
+- Read every rule, instruction, and user message word for word. Do not skim.
+- Support material technical claims with verified evidence. Use tools when needed and ensure the evidence is current enough for the claim.
+- NEVER use hedging language like "most likely", "probably", "generally", or "typically" when the answer is verifiable. Verify it instead.
 - When asked about external changes (updates, migrations, upgrades), read the actual changelog or release notes. Do not summarize from general knowledge.
 - If something cannot be verified, say "I don't know" rather than guessing.
-
-## Read files and instructions literally
-
-- Read every rule, instruction, and user message word for word. Do not skim.
-- After reading rules, follow them immediately. Do not violate a rule you just read.
-- Read applicable instructions completely. For other context files, read the relevant sections carefully and expand the investigation as needed to understand behavior, dependencies, and constraints.
-
-## Think before acting
-
-- Consider the implications of your changes before making them.
 - Quality and correctness are always more important than speed. Take your time.
-
-## Code quality
-
-- Reuse existing owners and consolidate shared responsibilities when equivalent required behavior is preserved; retain separate implementations where behavior or boundaries require them.
-- NEVER sacrifice readability for brevity. If a shorter version is harder to read, use the longer version.
+- When merging main (or the base branch), regardless of there being merge conflicts or not, always check for semantic conflicts in each of the new commits against the goal of the branch and it's changes.
+- When the user corrects a plan, or clarification establishes a concrete change to it, update the actual plan in the same turn. Do not stop at explaining what should change or offering to apply a correction that is already clear and authorized.
+- Do not add labels to issues or pull requests unless explicitly asked. Libra draft bypass labels are already authorized in the global workflow.
 
 ## PR creation
 - Always use "Closes #<issue>" in the PR description, unless the PR does not 
@@ -102,11 +88,3 @@ properly.
     - Project Status: In Progress
     - Iteration: Current Iteration (These are per month iterations, so it will be the current month)
 - Set Type: Task for linked issues.
-
-## Merging main
-
-- Regardless of there being merge conflicts or not, always check for semantic conflicts in each of the new commits that were on the main branch against the goal of the PR branch and it's changes.
-
-## Plans
-
-- When the user corrects a plan, or clarification establishes a concrete change to it, update the actual plan in the same turn. Do not stop at explaining what should change, proposing wording, or offering to apply a correction that is already clear and authorized.
