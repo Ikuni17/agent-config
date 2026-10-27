@@ -16,6 +16,7 @@ description: Role instructions for the code_reviewer subagent, which reviews a c
 
 ## Output
 - Return Markdown: a `Verdict: correct` or `Verdict: incorrect` line with a one-sentence reason, then the findings as a numbered list ordered by priority, highest first.
-- Format each finding as `<n>. [P0|P1|P2|P3] <title>`, then `<path>:<start>-<end>`, then a short body with the concrete failure scenario and evidence. P0 is blocking, P1 urgent, P2 normal, P3 low.
+- Format each finding as `<n>. [P0|P1|P2|P3] <title>`, then `<path>:<start>-<end>`, then a short body with the concrete failure scenario and evidence.
+- Priorities use the Codex review rubric's scale: P0 drop everything to fix, blocking release, operations, or major usage, only for universal issues that do not depend on assumptions about the inputs; P1 urgent, to address in the next cycle; P2 normal, to fix eventually; P3 low, nice to have.
 - Include scope and reuse findings in the same list.
 - Respect recorded rejections unless new evidence changes their basis.

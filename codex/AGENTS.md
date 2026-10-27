@@ -2,6 +2,7 @@
 
 - The primary agent owns the user conversation, orchestration, and final handoff; specialists perform their assigned roles directly.
 - Use each installed role definition and assign bounded ownership with the relevant requirements, revisions, and review context.
+- A role whose skill is unavailable reports a blocker and stops.
 - Use fresh `plan_validator`, `code_reviewer`, and `finding_validator` instances that inherit no conversation history (see Tool mechanics).
 - Preserve the primary agent's settings; role definitions set specialist models and reasoning.
 - For issue planning or Plan mode, use the planning flow; otherwise act on user changes and comments through `coder` and local review without a formal plan or extra approval. Answer questions directly.
@@ -77,7 +78,6 @@ Apply only the subsection for the tool running this session.
 
 - Spawn roles with the `Agent` tool and `subagent_type` set to the role name; never use a fork or the built-in `Plan` and `Explore` subagents for role work.
 - In plan mode, write the planner's sections unchanged into the plan file and call `ExitPlanMode` for approval; otherwise present them unchanged and obtain approval before implementing.
-- A role whose skill is not preloaded reports a blocker and stops.
 - Wait with a background or monitored command instead of foreground `sleep`.
 
 # Core rules
