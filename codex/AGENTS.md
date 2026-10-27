@@ -2,14 +2,14 @@
 
 - The primary agent owns the user conversation, orchestration, and final handoff; specialists perform their assigned roles directly.
 - Use each installed role definition and assign bounded ownership with the relevant requirements, revisions, and review context.
-- Use fresh `plan_validator`, `code_reviewer`, and `finding_validator` instances with `fork_turns="none"`.
+- Use fresh `plan_validator`, `code_reviewer`, and `finding_validator` instances that inherit no conversation history (see Tool mechanics).
 - Preserve the primary agent's settings; role definitions set specialist models and reasoning.
 - For issue planning or Plan mode, use the planning flow; otherwise act on user changes and comments through `coder` and local review without a formal plan or extra approval. Answer questions directly.
 
 ## Task context
 
 - Keep compact state in conversation: requirements or assignment, any plan version and approval, base and current revisions, correction counters, Libra applicability and deadline, accepted/rejected findings, and pending review IDs.
-- Preserve this state through compaction and handoffs. Pass original reviews directly and unchanged; keep verification notes separate from the original JSON and findings.
+- Preserve this state through compaction and handoffs. Pass original reviews directly and unchanged; keep verification notes separate from the original review output and findings.
 
 ## Global contract
 
@@ -33,7 +33,7 @@
 1. Clarify the requested outcome and delegate exploration and planning to `planner`.
 2. Send the returned plan, original requirements, and the planner's separate investigation handoff for material additions to a fresh `plan_validator`.
 3. Route material objections to `planner`, then send its revision to a fresh `plan_validator`. Allow three correction rounds, each a planner revision followed by validation; ask the user before a fourth if material objections remain.
-4. Check the validator's independent decision evidence for every material addition before accepting validation and presenting the planner's result as returned; do not author or reformat it. Use the required `<proposed_plan>` wrapper in Plan mode and obtain approval before implementing the plan. Plan-mode restrictions apply until the mode changes.
+4. Check the validator's independent decision evidence for every material addition before accepting validation and presenting the planner's result as returned; do not author or reformat it. In Plan mode, present it through the plan mechanism under Tool mechanics and obtain approval before implementing the plan. Plan-mode restrictions apply until the mode changes.
 5. Route user plan corrections to `planner` and update the actual plan in the same turn. Material revisions return through fresh validation and approval; routine in-scope file assignments can change without reopening approval.
 
 ## Implementation and local review
@@ -63,6 +63,22 @@ The primary agent may skip `code_reviewer` and `finding_validator` for changes i
 2. Read the current head and the user's pending review. Reuse it or create one if absent, preserve all user comments, and add only missing focus comments with valid diff anchors. If the head changes, reconcile again before writing.
 3. Use `gh api` with a JSON payload file; omit `event` when creating the review. Verify `PENDING` state, comment content, and current anchors. Never submit the review. Preserve existing drafts and report any API limitation.
 4. Hand off the HTTPS PR link, validation results, review path and Libra outcome, material caveats, and pending focus-comment state. Keep focus guidance in the inline comments and report unavailable comments or checks honestly.
+
+## Tool mechanics
+
+Apply only the subsection for the tool running this session.
+
+### Codex
+
+- Spawn the fresh instances above with `fork_turns="none"`.
+- In Plan mode, present the plan inside the required `<proposed_plan>` wrapper.
+
+### Claude Code
+
+- The roles are the user subagents in `~/.claude/agents`. Start each with the `Agent` tool and `subagent_type` set to the role name; every such call starts without conversation history. Never use a fork (it inherits the whole conversation and cannot carry a role definition, model, or tool restrictions) or the built-in `Plan` and `Explore` subagents (they start without these instructions) for role work.
+- In plan mode, write the planner's returned sections unchanged into the session's plan file and call `ExitPlanMode` to obtain approval. Outside plan mode, present them unchanged in the reply and obtain approval before implementing. The planner's two sections replace the plan-mode prompt's suggested plan structure.
+- Role subagents: if the role skill named in your definition is not preloaded in your context, report it as a blocker to the primary agent and stop.
+- Wait with a background or monitored command instead of foreground `sleep`.
 
 # Core rules
 
