@@ -44,11 +44,11 @@ flowchart TD
 
 | Role | Responsibility |
 | --- | --- |
-| `planner` | Planning with repository-specific guidance; Codex adds its native Plan-mode guidance |
-| `plan_validator` | Independent scope, integration, and duplication checks |
-| `coder` | Bounded implementation, reuse, and proportional validation |
-| `code_reviewer` | Scope and semantic duplication checks; Codex adds its native review rubric, Claude Code its bundled `code-review` skill |
-| `finding_validator` | Verification of reviewer findings and accept/reject decisions |
+| `planner` | Decision-complete planning of the requested change for developer approval |
+| `plan_validator` | Independent accept/revise validation of plan scope, integration, and duplication |
+| `coder` | Bounded implementation of approved plans and direct changes with proportional validation |
+| `code_reviewer` | Correctness, scope, and duplication review of the complete change |
+| `finding_validator` | Independent accept/reject adjudication of local and Libra findings by evidence |
 
 The workflow allows three plan corrections, three local review correction rounds per cycle, and three Libra correction rounds per PR. Each Libra review's accepted findings form one coder batch, followed by its complete local review cycle and one push. That batch consumes one Libra round and resets only the local counter to round one, leaving two additional local corrections. The Libra count persists across heads.
 
