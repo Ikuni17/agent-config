@@ -1,15 +1,26 @@
 # Agent configuration
 
-Codex reads these absolute symlinks:
+Global instructions, role definitions, and role skills for Codex and Claude Code. Each tool loads them through absolute symlinks into this repository.
+
+Codex reads:
 
 - `/Users/<user>/.codex/AGENTS.md` → `/Users/<user>/agent-config/codex/AGENTS.md`
 - `/Users/<user>/.codex/agents` → `/Users/<user>/agent-config/codex/agents`
+- `/Users/<user>/.agents/skills/<skill>` → `/Users/<user>/agent-config/skills/<skill>` for each role skill
 
-Start a fresh Codex session after changes so it loads the updated instructions and agent definitions. This repository does not change the primary model, concurrency, or other `config.toml` settings.
+Claude Code reads:
+
+- `/Users/<user>/.claude/CLAUDE.md` → `/Users/<user>/agent-config/claude/CLAUDE.md`
+- `/Users/<user>/.claude/agents` → `/Users/<user>/agent-config/claude/agents`
+- `/Users/<user>/.claude/skills/<skill>` → `/Users/<user>/agent-config/skills/<skill>` for each role skill
+
+`claude/CLAUDE.md` is a relative symlink to `../codex/AGENTS.md` (resolved from the link's own directory, so the absolute `~/.claude/CLAUDE.md` link chains through it), so both tools load one global instruction file; edit `codex/AGENTS.md`, not through the link. `skills/` holds the one copy of each role's instructions.
+
+Create the links before starting a session, and start a fresh session in either tool after changes so it loads the updated instructions, agent definitions, and skills. This repository does not change the primary model, concurrency, or other `config.toml` or `settings.json` settings.
 
 ## Workflow
 
-The primary agent coordinates the fixed roles in `codex/agents/` for repository changes and interacts with the developer. See `codex/AGENTS.md` for the orchestration. Tune each role's stable instructions in its TOML definition and keep task-specific facts in assignments.
+The primary agent coordinates the fixed roles for repository changes and interacts with the developer. See `codex/AGENTS.md` for the orchestration; its `Tool mechanics` section holds that file's only tool-specific lines. Each role's instructions live in `skills/<skill>/SKILL.md` in the [Agent Skills](https://agentskills.io) format, which both tools read. `codex/agents/*.toml` and `claude/agents/*.md` are lean definitions that set the model and reasoning effort, load the role skill, and carry only harness-specific mechanics.
 
 ```mermaid
 flowchart TD
@@ -32,15 +43,13 @@ flowchart TD
 ```
 
 | Role | Responsibility |
-| --- | --- | --- |
-| `planner` | Native Codex planner with additional guidance |
-| `plan_validator` | Independent scope, integration, and duplication checks |
-| `coder` | Bounded implementation, reuse, and proportional validation |
-| `code_reviewer` | Native Codex review plus scope and semantic duplication checks |
-| `finding_validator` | Verification of reviewer findings and accept/reject decisions |
-
-Each role uses short bullets grouped by responsibility and links to the shared [Global contract](codex/AGENTS.md#global-contract). The planner reads the live [native Plan-mode guidance](https://github.com/openai/codex/blob/main/codex-rs/collaboration-mode-templates/templates/plan.md); the reviewer reads the live [native review rubric](https://github.com/openai/codex/blob/main/codex-rs/prompts/templates/review/rubric.md). These are bundled defaults; active session instructions take precedence. Reading the sources does not change modes or tools. An unreadable source is reported as a blocker.
+| --- | --- |
+| `planner` | Decision-complete planning of the requested change for developer approval |
+| `plan_validator` | Independent accept/revise validation of plan scope, integration, and duplication |
+| `coder` | Bounded implementation of approved plans and direct changes with proportional validation |
+| `code_reviewer` | Correctness, scope, and duplication review of the complete change |
+| `finding_validator` | Independent accept/reject adjudication of local and Libra findings by evidence |
 
 The workflow allows three plan corrections, three local review correction rounds per cycle, and three Libra correction rounds per PR. Each Libra review's accepted findings form one coder batch, followed by its complete local review cycle and one push. That batch consumes one Libra round and resets only the local counter to round one, leaving two additional local corrections. The Libra count persists across heads.
 
-Libra is optional: repositories without it can become ready for human review after local review completes, with an explicit local-review outcome. Both completion paths produce pending inline focus comments for the developer. 
+Libra is optional: repositories without it can become ready for human review after local review completes, with an explicit local-review outcome. Both completion paths produce pending inline focus comments for the developer.

@@ -4,24 +4,7 @@ model = "gpt-6.1-sol"
 model_reasoning_effort = "xhigh"
 
 developer_instructions = '''
-## Role
-- Review the complete change against its base and the supplied requirements.
-- Remain read-only and return findings to the primary agent.
-- Follow the [Global contract](../AGENTS.md#global-contract).
-
-## Native review rules
-- Read the current [native Codex review rubric](https://raw.githubusercontent.com/openai/codex/main/codex-rs/prompts/templates/review/rubric.md) before each review.
-- Apply its review criteria, priorities, and exact JSON output schema.
+- Use the `$code-reviewer` skill as your role instructions.
+- Read the current [native Codex review rubric](https://raw.githubusercontent.com/openai/codex/main/codex-rs/prompts/templates/review/rubric.md) before each review and apply its review criteria and priorities; the output format comes from the skill.
 - If the source cannot be read, report the blocker and leave the review incomplete.
-
-## Scope and reuse
-- Trace affected existing capabilities beyond the diff and verify the author's reuse claims.
-- Similar code may serve different required behavior; flag duplication only when a shared implementation can safely meet both needs.
-- Support duplication findings with concrete evidence and a safe consolidation path.
-- Keep findings within the requested purpose; avoid unrelated cleanup or broader behavior.
-- Return scope or design departures to the primary agent to reconcile with the user's intent.
-
-## Output
-- Return the native JSON result with actionable findings anchored in the current diff.
-- Respect recorded rejections unless new evidence changes their basis.
 '''
