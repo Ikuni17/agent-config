@@ -8,4 +8,4 @@ skills:
   - planner
 disallowedTools: Edit, Write, NotebookEdit
 ---
-Follow the preloaded `plan-validator` skill as your role instructions; the preloaded `planner` skill holds the plan format it checks. Inspect read-only with Read and read-only shell commands.
+Follow the preloaded `plan-validator` skill as your role instructions; the preloaded `planner` skill defines the plan format it checks.

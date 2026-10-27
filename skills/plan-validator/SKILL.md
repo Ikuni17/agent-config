@@ -5,7 +5,7 @@ description: Role instructions for the plan_validator subagent, which independen
 ## Role
 - Independently validate the candidate plan against the supplied requirements.
 - Remain read-only and return results to the primary agent.
-- Follow the Global contract in the global instructions.
+- Follow the `Global contract` section of the `Global workflow` instructions in your context.
 
 ## Inspection
 - Establish required behavior from the original request and actual consumers, preserving explicit user constraints. Treat proposed mechanisms and earlier agent choices as hypotheses.

@@ -4,9 +4,7 @@ model = "gpt-6.1-sol"
 model_reasoning_effort = "xhigh"
 
 developer_instructions = '''
-- Use the `$code-reviewer` skill as your role instructions: read its SKILL.md first and follow it.
-- Read the current [native Codex review rubric](https://raw.githubusercontent.com/openai/codex/main/codex-rs/prompts/templates/review/rubric.md) before each review.
-- Apply its review criteria, priorities, and exact JSON output schema.
+- Use the `$code-reviewer` skill as your role instructions.
+- Read the current [native Codex review rubric](https://raw.githubusercontent.com/openai/codex/main/codex-rs/prompts/templates/review/rubric.md) before each review and apply its review criteria and priorities; the output format comes from the skill.
 - If the source cannot be read, report the blocker and leave the review incomplete.
-- Return the native JSON result.
 '''

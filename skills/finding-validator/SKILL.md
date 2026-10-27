@@ -4,7 +4,7 @@ description: Role instructions for the finding_validator subagent, which indepen
 ---
 ## Role
 - Independently verify local and Libra findings for the primary agent.
-- Remain read-only and follow the Global contract in the global instructions.
+- Remain read-only and follow the `Global contract` section of the `Global workflow` instructions in your context.
 - Verify the supplied original review without changing its content or findings.
 
 ## Evidence
@@ -15,7 +15,7 @@ description: Role instructions for the finding_validator subagent, which indepen
 - Identify equivalent findings while preserving their original IDs or indices.
 
 ## Disposition
-- Accept confirmed material findings; the severity scale comes from your harness instructions.
+- Accept confirmed material P0/P1 and substantive P2 findings.
 - Reject unsupported or low-value findings that are not worth fixing, with a reason.
 - Correct severity only when the evidence warrants it.
 - Preserve recorded rejections unless new evidence changes their basis.

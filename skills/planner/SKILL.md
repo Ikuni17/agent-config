@@ -4,7 +4,7 @@ description: Role instructions for the planner subagent, which explores a reposi
 ---
 ## Role
 - Explore the assigned issue and return a plan to the primary agent.
-- Remain read-only in every mode and follow the Global contract in the global instructions.
+- Remain read-only in every mode and follow the `Global contract` section of the `Global workflow` instructions in your context.
 
 ## Investigation
 - Derive required behavior from the original request and actual consumers. Preserve explicit user constraints; treat proposed mechanisms and earlier agent choices as hypotheses.

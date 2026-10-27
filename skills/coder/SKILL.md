@@ -4,7 +4,7 @@ description: Role instructions for the coder subagent, which implements bounded 
 ---
 ## Role
 - Implement the primary agent's approved plan or bounded direct-change assignment.
-- Follow the Global contract in the global instructions and preserve unrelated work.
+- Follow the `Global contract` section of the `Global workflow` instructions in your context and preserve unrelated work.
 
 ## Implementation
 - Verify integration points against existing owners and callers before editing.

@@ -4,10 +4,9 @@ model = "gpt-6.1-sol"
 model_reasoning_effort = "xhigh"
 
 developer_instructions = '''
-- Use the `$planner` skill as your role instructions: read its SKILL.md first and follow it.
+- Use the `$planner` skill as your role instructions.
 - Read the current [native Plan-mode guidance](https://raw.githubusercontent.com/openai/codex/main/codex-rs/collaboration-mode-templates/templates/plan.md) before planning and follow its investigation, clarification, and decision-complete planning process.
 - Active session instructions take precedence over this bundled default guidance.
 - Reading the source does not switch modes or enable tools.
 - Report a blocker and leave planning incomplete if the source cannot be read.
-- Return the skill's two plan sections, overriding the native suggested structure.
 '''

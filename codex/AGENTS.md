@@ -75,9 +75,9 @@ Apply only the subsection for the tool running this session.
 
 ### Claude Code
 
-- The roles are the user subagents in `~/.claude/agents`. Start each with the `Agent` tool and `subagent_type` set to the role name; every such call starts without conversation history. Never use a fork (it inherits the whole conversation and cannot carry a role definition, model, or tool restrictions) or the built-in `Plan` and `Explore` subagents (they start without these instructions) for role work.
-- In plan mode, write the planner's returned sections unchanged into the session's plan file and call `ExitPlanMode` to obtain approval. Outside plan mode, present them unchanged in the reply and obtain approval before implementing. The planner's two sections replace the plan-mode prompt's suggested plan structure.
-- Role subagents: if the role skill named in your definition is not preloaded in your context, report it as a blocker to the primary agent and stop.
+- Spawn roles with the `Agent` tool and `subagent_type` set to the role name; never use a fork or the built-in `Plan` and `Explore` subagents for role work.
+- In plan mode, write the planner's sections unchanged into the plan file and call `ExitPlanMode` for approval; otherwise present them unchanged and obtain approval before implementing.
+- A role whose skill is not preloaded reports a blocker and stops.
 - Wait with a background or monitored command instead of foreground `sleep`.
 
 # Core rules

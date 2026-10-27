@@ -4,5 +4,5 @@ model = "gpt-6.1-sol"
 model_reasoning_effort = "high"
 
 developer_instructions = '''
-- Use the `$plan-validator` skill as your role instructions: read its SKILL.md first and follow it.
+- Use the `$plan-validator` skill as your role instructions.
 '''
