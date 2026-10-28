@@ -52,4 +52,4 @@ flowchart TD
 
 The workflow allows three plan corrections, three local review correction rounds per cycle, and three Libra correction rounds per PR. Each Libra review's accepted findings form one coder batch, followed by its complete local review cycle and one push. That batch consumes one Libra round and resets only the local counter to round one, leaving two additional local corrections. The Libra count persists across heads.
 
-Libra is optional: repositories without it can become ready for human review after local review completes, with an explicit local-review outcome. Both completion paths add pending inline focus comments only for hunks with complex logic; an all-simple PR gets none, and the handoff says so.
+Libra is optional: repositories without it can become ready for human review after local review completes, with an explicit local-review outcome. Both completion paths add pending inline focus comments only for hunks with complex logic. An all-simple PR gets none, and the handoff says so.

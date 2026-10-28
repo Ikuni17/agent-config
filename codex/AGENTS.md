@@ -60,13 +60,49 @@ The primary agent may skip `code_reviewer` and `finding_validator` for changes i
 
 ## Pending focus comments and handoff
 
-1. Add a focus comment for each hunk that adds, removes, or changes complex logic: a condition that mixes `and` with `or` across three or more inputs; nested branches that select different results; a loop whose exit or next input depends on earlier iterations; ordering, retry, timeout, or concurrency control; index, offset, time, or money arithmetic beyond a fixed step; a grant or deny decision from two or more inputs; error recovery that rolls back or substitutes data; a migration that rewrites stored data.
-2. Treat every other hunk, including config values, docs, and tests, as simple and leave it to local and Libra review. Do not add a comment to describe a hunk or to repeat an accepted finding. Skip hunks the user has already reviewed or removed; do not recreate their focus comments.
-3. Write each comment as `Focus:` plus three sentences: what the named symbol decides; the value, count, order of events, or error that makes it hard; one check that names what the user reads and the expected result. Example: "Focus: `splitRange` divides a date range into calendar days. The `2026-03-08` daylight-saving change in `America/New_York` makes one 23-hour day. Check that `splitRange` returns a 23-hour day for `2026-03-08` in `America/New_York`."
-4. Apply ASD-STE100 to every sentence: at most 20 words; one statement or one instruction; active voice; present tense; imperative mood for the check; the exact symbol, value, or line from the diff; no noun cluster over three words; one term per concept; no vague words such as boundary, appropriate, properly, ensure, handle, or meaningful. Keep a comment under 40 words. Rewrite a comment that breaks a rule.
-5. Read the current head and the user's pending review. When a comment is due, reuse the review or create one if absent, preserve all user comments, and add only missing focus comments with valid diff anchors. If the head changes, reconcile again before writing.
-6. Use `gh api` with a JSON payload file; omit `event` when creating the review. Verify `PENDING` state, comment content, and current anchors. Never submit the review. Preserve existing drafts and report any API limitation.
-7. Hand off the HTTPS PR link, validation results, review path and Libra outcome, material caveats, and pending focus-comment state: the comment count, or that all hunks are simple. Keep focus guidance in the inline comments and report unavailable comments or checks honestly.
+1. Add one focus comment for each hunk with complex logic. Complex logic is:
+   - a condition that mixes `and` with `or` across three or more inputs
+   - nested branches that select different results
+   - a loop whose exit, input, or branch depends on a flag set by earlier iterations
+   - ordering, retry, timeout, or concurrency control
+   - index, offset, time, or money arithmetic beyond a fixed step
+   - a grant or deny decision from two or more inputs
+   - error recovery that rolls back or substitutes data
+   - a migration that rewrites stored data
+2. Every other hunk is simple. Leave it to local and Libra review.
+   - Config values, docs, and tests are simple.
+   - Do not describe a hunk or repeat an accepted finding.
+   - Skip hunks the user already reviewed or removed. Do not recreate their focus comments.
+3. Write each comment as `Focus:` plus three sentences.
+   - What the named symbol decides.
+   - The value, count, order of events, or error that makes it hard.
+   - One check with what the user reads and the expected result.
+   - Example: "Focus: `splitRange` divides a date range into calendar days. The `2026-03-08` daylight-saving change in `America/New_York` makes one 23-hour day. Check that `splitRange` returns a 23-hour day for `2026-03-08` in `America/New_York`."
+4. Apply ASD-STE100 to every sentence.
+   - At most 20 words.
+   - One statement or one instruction.
+   - Active voice and present tense.
+   - Imperative mood for the check.
+   - The exact symbol, value, or line from the diff.
+   - No noun cluster over three words.
+   - One term per concept.
+   - No vague words such as boundary, appropriate, properly, ensure, handle, or meaningful.
+   - Under 40 words per comment.
+   - Rewrite a comment that breaks a rule.
+5. Read the current head and the user's pending review.
+   - When a comment is due, reuse the review or create one.
+   - Preserve all user comments.
+   - Add only missing focus comments with valid diff anchors.
+   - If the head changes, reconcile again before writing.
+6. Create comments with `gh api` and a JSON payload file.
+   - Omit `event` when creating the review.
+   - Verify `PENDING` state, comment content, and anchors.
+   - Never submit the review.
+   - Preserve existing drafts and report any API limitation.
+7. Hand off the PR link, validation results, review path, Libra outcome, and caveats.
+   - State the focus comment count, or that all hunks are simple.
+   - Keep focus guidance in the inline comments.
+   - Report unavailable comments or checks honestly.
 
 ## Tool mechanics
 
