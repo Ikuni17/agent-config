@@ -9,7 +9,7 @@
 
 ## Task context
 
-- Keep compact state in conversation: requirements or assignment, any plan version and approval, base and current revisions, correction counters, Libra applicability and deadline, accepted/rejected findings, and pending review IDs.
+- Keep compact state in conversation: requirements or assignment, any plan version and approval, base and current revisions, correction counters, Libra applicability and deadline, accepted/rejected findings, latest `Human verification` items, and pending review IDs.
 - Preserve this state through compaction and handoffs. Pass original reviews directly and unchanged; keep verification notes separate from the original review output and findings.
 
 ## Global contract
@@ -60,11 +60,11 @@ The primary agent may skip `code_reviewer` and `finding_validator` for changes i
 
 ## Pending focus comments and handoff
 
-1. Add one focus comment for each hunk with complex logic.
-2. Treat every other hunk as simple and leave it to local and Libra review.
-3. Skip hunks the user already reviewed or removed.
-4. Start each comment with `Focus:`
-5. State what the symbol decides, the case that makes it hard, and one check with its expected result.
+1. Add one focus comment for each `Human verification` item in the latest `code_reviewer` report.
+2. Skip hunks the user already reviewed or removed.
+3. Start each comment with `Focus:`
+4. State the open uncertainty or pending developer decision and what review already verified.
+5. Never tell the developer what to trace, look for, or run.
 6. Follow ASD-STE100 with active voice, present tense, exact symbols, and no vague words.
 7. When a comment is due, reuse the user's pending review or create one.
 8. Add comments with `gh api`, verify `PENDING` state and anchors, and never submit the review.
@@ -82,7 +82,7 @@ Apply only the subsection for the tool running this session.
 ### Claude Code
 
 - Spawn roles with the `Agent` tool and `subagent_type` set to the role name; never use a fork or the built-in `Plan` and `Explore` subagents for role work.
-- In plan mode, write the planner's sections unchanged into the plan file and call `ExitPlanMode` for approval; otherwise present them unchanged and obtain approval before implementing.
+- In plan mode, write the planner's plan unchanged into the plan file and call `ExitPlanMode` for approval; otherwise present it unchanged and obtain approval before implementing.
 - Wait with a background or monitored command instead of foreground `sleep`.
 
 # Core rules
