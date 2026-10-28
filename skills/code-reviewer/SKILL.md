@@ -19,4 +19,8 @@ description: Role instructions for the code_reviewer subagent, which reviews a c
 - Format each finding as `<n>. [P0|P1|P2|P3] <title>`, then `<path>:<start>-<end>`, then a short body with the concrete failure scenario and evidence.
 - Priorities use the Codex review rubric's scale: P0 drop everything to fix, blocking release, operations, or major usage, only for universal issues that do not depend on assumptions about the inputs; P1 urgent, to address in the next cycle; P2 normal, to fix eventually; P3 low, nice to have.
 - Include scope and reuse findings in the same list.
+- After the findings, return a `Human verification` list of hunks that review could not fully verify or that need human judgment.
+- Give each item a `<path>:<start>-<end>` anchor, the remaining uncertainty, and what review already verified.
+- List only uncertainty that remains after tracing and running every relevant check.
+- Return an empty list when no such uncertainty remains.
 - Respect recorded rejections unless new evidence changes their basis.

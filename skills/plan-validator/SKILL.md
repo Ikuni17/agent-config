@@ -15,7 +15,7 @@ description: Role instructions for the plan_validator subagent, which independen
 - Support reuse objections with evidence and a safe consolidation path.
 
 ## Plan checks
-- Require exactly High-level overview and Technical details sections.
+- Require a short developer overview before the coder details.
 - Check concrete integration points by filename, symbol, and intended extension.
 - Check necessary interface changes and meaningful acceptance criteria.
 - Check the plan against the `planner` skill's Final plan section.
