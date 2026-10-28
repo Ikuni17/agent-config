@@ -34,7 +34,7 @@ flowchart TD
     LocalCheck -->|Accepted findings: one batch| Coder
     LocalCheck -->|No findings| PR[Create draft PR / push update]
     PR --> UseLibra{Libra?}
-    UseLibra -->|Not used| Ready[Ready + pending focus comments]
+    UseLibra -->|Not used| Ready[Ready + focus comments on complex hunks]
     UseLibra -->|Applies| Libra[Libra review]
     Libra --> LibraCheck[finding_validator]
     LibraCheck -->|Accepted findings: one batch| Coder
@@ -52,4 +52,4 @@ flowchart TD
 
 The workflow allows three plan corrections, three local review correction rounds per cycle, and three Libra correction rounds per PR. Each Libra review's accepted findings form one coder batch, followed by its complete local review cycle and one push. That batch consumes one Libra round and resets only the local counter to round one, leaving two additional local corrections. The Libra count persists across heads.
 
-Libra is optional: repositories without it can become ready for human review after local review completes, with an explicit local-review outcome. Both completion paths produce pending inline focus comments for the developer.
+Libra is optional: repositories without it can become ready for human review after local review completes, with an explicit local-review outcome. Both completion paths add pending inline focus comments only for hunks with complex logic. An all-simple PR gets none, and the handoff says so.

@@ -60,10 +60,15 @@ The primary agent may skip `code_reviewer` and `finding_validator` for changes i
 
 ## Pending focus comments and handoff
 
-1. Identify meaningful areas for the user's judgment on the current diff. Skip areas the user has already reviewed or removed; do not recreate their focus comments.
-2. Read the current head and the user's pending review. Reuse it or create one if absent, preserve all user comments, and add only missing focus comments with valid diff anchors. If the head changes, reconcile again before writing.
-3. Use `gh api` with a JSON payload file; omit `event` when creating the review. Verify `PENDING` state, comment content, and current anchors. Never submit the review. Preserve existing drafts and report any API limitation.
-4. Hand off the HTTPS PR link, validation results, review path and Libra outcome, material caveats, and pending focus-comment state. Keep focus guidance in the inline comments and report unavailable comments or checks honestly.
+1. Add one focus comment for each hunk with complex logic.
+2. Treat every other hunk as simple and leave it to local and Libra review.
+3. Skip hunks the user already reviewed or removed.
+4. Start each comment with `Focus:`
+5. State what the symbol decides, the case that makes it hard, and one check with its expected result.
+6. Follow ASD-STE100 with active voice, present tense, exact symbols, and no vague words.
+7. When a comment is due, reuse the user's pending review or create one.
+8. Add comments with `gh api`, verify `PENDING` state and anchors, and never submit the review.
+9. Hand off the PR link, validation results, Libra outcome, caveats, and the focus comment count.
 
 ## Tool mechanics
 
