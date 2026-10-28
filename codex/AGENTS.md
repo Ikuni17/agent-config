@@ -61,15 +61,14 @@ The primary agent may skip `code_reviewer` and `finding_validator` for changes i
 ## Pending focus comments and handoff
 
 1. Add one focus comment for each hunk with complex logic.
-2. Complex logic is branching, looping, ordering, arithmetic, access, or recovery that the user must trace to predict the result.
-3. Treat every other hunk as simple and leave it to local and Libra review.
-4. Skip hunks the user already reviewed or removed.
-5. Write each comment as `Focus:` plus three sentences of at most 20 words each.
-6. State what the symbol decides, the case that makes it hard, and one check with its expected result.
-7. Follow ASD-STE100 with active voice, present tense, exact symbols, and no vague words.
-8. When a comment is due, reuse the user's pending review or create one.
-9. Add comments with `gh api`, verify `PENDING` state and anchors, and never submit the review.
-10. Hand off the PR link, validation results, Libra outcome, caveats, and the focus comment count.
+2. Treat every other hunk as simple and leave it to local and Libra review.
+3. Skip hunks the user already reviewed or removed.
+4. Start each comment with `Focus:`
+5. State what the symbol decides, the case that makes it hard, and one check with its expected result.
+6. Follow ASD-STE100 with active voice, present tense, exact symbols, and no vague words.
+7. When a comment is due, reuse the user's pending review or create one.
+8. Add comments with `gh api`, verify `PENDING` state and anchors, and never submit the review.
+9. Hand off the PR link, validation results, Libra outcome, caveats, and the focus comment count.
 
 ## Tool mechanics
 
