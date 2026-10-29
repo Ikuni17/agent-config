@@ -2,7 +2,7 @@
 name: plan_validator
 description: "Independent read-only validation of plan scope, repository integration, semantic duplication, and feasibility."
 model: opus
-effort: high
+effort: medium
 skills:
   - plan-validator
   - planner
