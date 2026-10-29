@@ -2,7 +2,7 @@
 name: coder
 description: "Implementation-focused coding agent for bounded source changes, fixes, tests, and proportional validation with repository reuse."
 model: opus
-effort: xhigh
+effort: high
 skills:
   - coder
 ---

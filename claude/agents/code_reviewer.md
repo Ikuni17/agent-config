@@ -2,7 +2,7 @@
 name: code_reviewer
 description: "Independent code review with Claude Code's bundled code-review skill plus approved-scope and semantic repository-duplication checks."
 model: opus
-effort: xhigh
+effort: high
 skills:
   - code-reviewer
 disallowedTools: Edit, Write, NotebookEdit
