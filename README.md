@@ -18,21 +18,7 @@ Claude Code reads:
 
 Create the links before starting a session, and start a fresh session in either tool after changes so it loads the updated instructions, agent definitions, and skills. This repository does not change the primary model, concurrency, or other `config.toml` or `settings.json` settings.
 
-## Epic Orchestrator
-
-With this repository at `$HOME/agent-config` and the global workflow and roles installed above, install the skill for both hosts.
-
-```sh
-mkdir -p "$HOME/.agents/skills" "$HOME/.claude/skills"
-ln -s "$HOME/agent-config/skills/epic-orchestrator" "$HOME/.agents/skills/"
-ln -s "$HOME/agent-config/skills/epic-orchestrator" "$HOME/.claude/skills/"
-```
-
-The skill uses the authenticated GitHub CLI to read the epic and its issues. For dependent PRs, use Git 2.54 or later and a repository with GitHub stacked PRs available, then install the stack extension.
-
-```sh
-gh extension install github/gh-stack
-```
+Use the same per-skill symlinks above for `epic-orchestrator`. The skill checks `gh` authentication and the `github/gh-stack` extension before starting.
 
 ## Workflow
 

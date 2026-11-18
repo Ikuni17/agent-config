@@ -1,30 +1,36 @@
 ---
 name: epic-orchestrator
-description: Coordinate planning and implementation across a GitHub epic or tracking issue in Codex or Claude Code. Use when the user wants linked issues planned or built together. Schedule independent work in parallel and manage dependent pull requests as native GitHub stacks.
+description: >-
+  Orchestrate planning and implementation across the sub-issues of a GitHub epic using host-native parallel subagents while keeping the orchestrator context small. Use whenever the user points at an epic, parent issue, tracking issue, or multi-issue body of work and wants its linked tasks planned or built as a set. Map dependencies, plan in reviewed waves, present an approval gate, implement issues in parallel worktrees, then stabilize assigned PRs from a shared stack coordinator. Supports Codex and Claude Code through host-specific adapters.
 ---
 
-# Epic orchestrator
+# Epic Orchestrator
 
-The primary agent runs the installed global workflow in `AGENTS.md` or `CLAUDE.md` for each issue. Use its roles, approvals, reviews, and PR policies. Keep issue and PR state in the primary conversation. Record the dependency contracts, approved stack and merge order, author handles, worktree assignments, and reviewed revisions.
+Act only as the orchestrator. Delegate exploration, planning, implementation, and review; route feedback; and assemble outputs. Do not author issue plans or code.
 
-## Plan the epic
+## Scope invariant
 
-1. Resolve the epic repository and load the epic and its GitHub sub-issues, or its issue checklist when no sub-issues exist. Check each issue body and merged work to identify the remaining work. Default to one PR per issue.
-2. Map dependency contracts, the issue requirements that authorize them, and the proposed stack order. Start each planning wave with issues whose upstream contracts have passed independent plan validation, and pass those contracts to downstream planners. Escalate cycles, ambiguous stack order, proposed PR splits, and changes that require new scope. Record the developer’s decision on the affected issue and keep its dependents blocked until the contract is settled. Revalidate plans affected by a change to an upstream contract.
-3. Present the dependency graph and merge order alongside the unchanged, independently validated plans for one developer approval. Keep planning read-only. Use the host's global approval mechanism, with explicit approval in chat for Codex Default mode. Keep execution within the approved issue plans and scope decisions.
+For each issue, permit only the smallest changeset necessary to satisfy its issue text and the explicit contracts it must provide to or consume from other issues in the epic. Every planned change and implementation diff must be traceable to one of those requirements.
 
-## Schedule work
+If an issue does not authorize work required by an epic contract, or any agent proposes work outside that boundary, block the affected issue and ask the developer for clarification. State the exact gap and proposed disposition of removal or the smallest necessary scope addition. Do not add that work to a plan or implementation until the developer explicitly approves it and the approval is recorded verbatim. Epic-level execution approval does not approve an unraised scope addition.
 
-Use issue-keyed assignments and queue ready work within the host's available agent capacity. As agents finish, record the outcome and refill their slots. A capacity error defers the queued assignment. Unrelated issues and stacks can progress when an issue and its dependents are blocked.
+Create new pull requests as drafts. If a pull request is ready for review, treat that state as an intentional developer action; no agent may convert it back to draft.
 
-In Codex, use the named `agent_type`, unique task names, and the global workflow's fresh reviewer settings. Wait for available capacity with `wait_agent` and resume a completed author with `followup_task`. In Claude Code, use `Agent` with the exact `subagent_type` and the global workflow's fresh reviewer settings. Use its background wait and author resume capabilities when available. Give replacement authors the original issue assignment, approved plan, current revision, and relevant review context when the original author cannot resume.
+## Select the host adapter
 
-## Execute approved work
+Determine the host from explicit system instructions and the available agent tools, not from this skill's filesystem path. The same directory may be discovered through a symlink.
 
-Give each initial coder a separate worktree pinned to its recorded base and a bounded assignment with the approved plan and upstream contracts. Start an approved child layer once its parent has an initial local commit. Keep initial stack commits local until coordinator handoff and review. For dependent PRs, follow [the stack workflow](references/stacks.md) for coordination, publication, and corrections. Run independent PRs through the global workflow directly.
+Read exactly one adapter completely before taking workflow actions:
 
-Assign each reviewer an absolute worktree path and exact base and head SHAs. In Claude Code, enter the existing review worktree with `EnterWorktree`, verify its root and head, and launch the fresh named `code_reviewer` there with `high --max-findings all <base>..<head>` as the bundled review arguments. Wait for the result before restoring the original checkout with `ExitWorktree`, keeping the worktree. Serialize these switches and hold the affected review if the host cannot bind it to the target checkout.
+- Codex: `references/codex.md`
+- Claude Code: `references/claude.md`
 
-## Hand off the epic
+If the host is unclear or unsupported, stop and state which orchestration capabilities could not be identified. Do not guess tool names or lifecycle behavior.
 
-Use `Part of #<epic>` alongside the global issue reference. Use `Closes #<epic>` only for the designated final PR when merging in the approved order completes the epic. Flag issue and epic closure for verification when a PR targets a stack branch. Report the merge order, any blocked items, and each PR's global workflow handoff. Leave merges to the developer.
+After the adapter permits the run, read `references/workflow.md` completely. Apply the installed `Global workflow` in `AGENTS.md` or `CLAUDE.md` and use its `planner`, `plan_validator`, `coder`, `code_reviewer`, and `finding_validator` roles.
+
+The host adapter controls agent spawning, handles, concurrency, follow-ups, permissions, result visibility, and worktree isolation. The shared workflow controls dependency ordering, artifacts, review independence, approval, PR shape, and safety. Follow the installed Global workflow for role assignments, review, and PR policies. When the host adapter and shared workflow conflict, follow the adapter for host mechanics without weakening the shared safety and approval gates.
+
+Keep detailed work in scratch files and only compact status in the orchestrator's context. Use a fresh independent agent for every review. Route revisions to the original author when the host supports it, or use the adapter's artifact-seeded replacement-author fallback.
+
+This is a single-session workflow. If the session ends, active orchestration stops.
