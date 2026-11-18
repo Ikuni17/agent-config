@@ -1,22 +1,24 @@
 # Agent configuration
 
-Global instructions, role definitions, and role skills for Codex and Claude Code. Each tool loads them through absolute symlinks into this repository.
+Global instructions, role definitions, and skills for Codex and Claude Code. Each tool loads them through absolute symlinks into this repository.
 
 Codex reads:
 
 - `/Users/<user>/.codex/AGENTS.md` → `/Users/<user>/agent-config/codex/AGENTS.md`
 - `/Users/<user>/.codex/agents` → `/Users/<user>/agent-config/codex/agents`
-- `/Users/<user>/.agents/skills/<skill>` → `/Users/<user>/agent-config/skills/<skill>` for each role skill
+- `/Users/<user>/.agents/skills/<skill>` → `/Users/<user>/agent-config/skills/<skill>` for each skill
 
 Claude Code reads:
 
 - `/Users/<user>/.claude/CLAUDE.md` → `/Users/<user>/agent-config/claude/CLAUDE.md`
 - `/Users/<user>/.claude/agents` → `/Users/<user>/agent-config/claude/agents`
-- `/Users/<user>/.claude/skills/<skill>` → `/Users/<user>/agent-config/skills/<skill>` for each role skill
+- `/Users/<user>/.claude/skills/<skill>` → `/Users/<user>/agent-config/skills/<skill>` for each skill
 
 `claude/CLAUDE.md` is a relative symlink to `../codex/AGENTS.md` (resolved from the link's own directory, so the absolute `~/.claude/CLAUDE.md` link chains through it), so both tools load one global instruction file; edit `codex/AGENTS.md`, not through the link. `skills/` holds the one copy of each role's instructions.
 
 Create the links before starting a session, and start a fresh session in either tool after changes so it loads the updated instructions, agent definitions, and skills. This repository does not change the primary model, concurrency, or other `config.toml` or `settings.json` settings.
+
+Use the same per-skill symlinks above for `epic-orchestrator`. The skill checks `gh` authentication and the `github/gh-stack` extension before starting.
 
 ## Workflow
 
