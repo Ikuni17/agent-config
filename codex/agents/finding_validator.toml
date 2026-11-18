@@ -1,6 +1,6 @@
 name = "finding_validator"
 description = "Independent read-only adjudication of local and Libra findings: evidence, severity, and accept/reject decisions."
-model = "gpt-6.1-sol"
+model = "gpt-6.2-sol"
 model_reasoning_effort = "high"
 
 developer_instructions = '''

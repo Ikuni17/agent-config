@@ -1,6 +1,6 @@
 name = "code_reviewer"
 description = "Independent native Codex code review plus approved-scope and semantic repository-duplication checks."
-model = "gpt-6.1-sol"
+model = "gpt-6.2-sol"
 model_reasoning_effort = "xhigh"
 
 developer_instructions = '''

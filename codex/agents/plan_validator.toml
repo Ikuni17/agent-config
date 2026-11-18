@@ -1,6 +1,6 @@
 name = "plan_validator"
 description = "Independent read-only validation of plan scope, repository integration, semantic duplication, and feasibility."
-model = "gpt-6.1-sol"
+model = "gpt-6.2-sol"
 model_reasoning_effort = "high"
 
 developer_instructions = '''
