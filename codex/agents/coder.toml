@@ -1,6 +1,6 @@
 name = "coder"
 description = "Implementation-focused coding agent for bounded source changes, fixes, tests, and proportional validation with repository reuse."
-model = "gpt-6.1-sol"
+model = "gpt-6.2-sol"
 model_reasoning_effort = "xhigh"
 
 developer_instructions = '''

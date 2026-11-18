@@ -1,6 +1,6 @@
 name = "planner"
 description = "Read-only repository planner producing a concise user overview and a concrete integration plan for the coder."
-model = "gpt-6.1-sol"
+model = "gpt-6.2-sol"
 model_reasoning_effort = "xhigh"
 
 developer_instructions = '''
