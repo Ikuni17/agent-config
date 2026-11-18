@@ -14,11 +14,25 @@ Claude Code reads:
 - `/Users/<user>/.claude/agents` → `/Users/<user>/agent-config/claude/agents`
 - `/Users/<user>/.claude/skills/<skill>` → `/Users/<user>/agent-config/skills/<skill>` for each skill
 
-Link `skills/epic-orchestrator` under the name `epic-orchestrator` to use the global workflow across the issues in a GitHub epic.
-
 `claude/CLAUDE.md` is a relative symlink to `../codex/AGENTS.md` (resolved from the link's own directory, so the absolute `~/.claude/CLAUDE.md` link chains through it), so both tools load one global instruction file; edit `codex/AGENTS.md`, not through the link. `skills/` holds the one copy of each role's instructions.
 
 Create the links before starting a session, and start a fresh session in either tool after changes so it loads the updated instructions, agent definitions, and skills. This repository does not change the primary model, concurrency, or other `config.toml` or `settings.json` settings.
+
+## Epic Orchestrator
+
+With this repository at `$HOME/agent-config` and the global workflow and roles installed above, install the skill for both hosts.
+
+```sh
+mkdir -p "$HOME/.agents/skills" "$HOME/.claude/skills"
+ln -s "$HOME/agent-config/skills/epic-orchestrator" "$HOME/.agents/skills/"
+ln -s "$HOME/agent-config/skills/epic-orchestrator" "$HOME/.claude/skills/"
+```
+
+The skill uses the authenticated GitHub CLI to read the epic and its issues. For dependent PRs, use Git 2.54 or later and a repository with GitHub stacked PRs available, then install the stack extension.
+
+```sh
+gh extension install github/gh-stack
+```
 
 ## Workflow
 

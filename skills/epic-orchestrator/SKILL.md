@@ -1,40 +1,30 @@
 ---
 name: epic-orchestrator
-description: Coordinate planning and implementation across a GitHub epic or tracking issue in Codex or Claude Code. Use when the user wants linked issues planned or built together. Schedule independent work in parallel and use stacked pull requests for dependent work.
+description: Coordinate planning and implementation across a GitHub epic or tracking issue in Codex or Claude Code. Use when the user wants linked issues planned or built together. Schedule independent work in parallel and manage dependent pull requests as native GitHub stacks.
 ---
 
 # Epic orchestrator
 
-Run the installed global workflow in `AGENTS.md` or `CLAUDE.md` for each issue. The primary agent coordinates dependencies, approval, and handoff. Delegate to the installed `planner`, `plan_validator`, `coder`, `code_reviewer`, and `finding_validator` roles. In Codex, specify the named `agent_type` and use `fork_turns="none"` for each fresh independent review role. In Claude Code, call `Agent` with the exact `subagent_type` and a non-forked context.
-
-Keep the global workflow's state in the primary conversation, keyed by issue and PR. Include dependency contracts, stack order, worktree paths, and reviewed revisions. Pass each role its bounded assignment, repository rules, approved dependencies, and the original role outputs required by the global workflow. Queue eligible work up to host capacity. Resume authors where supported, and keep unrelated issues moving when an issue and its dependents are blocked.
+The primary agent runs the installed global workflow in `AGENTS.md` or `CLAUDE.md` for each issue. Use its roles, approvals, reviews, and PR policies. Keep issue and PR state in the primary conversation. Record the dependency contracts, approved stack and merge order, author handles, worktree assignments, and reviewed revisions.
 
 ## Plan the epic
 
-1. Resolve the epic number or URL to one GitHub host, repository, and default branch. Verify the local checkout's effective fetch remote against the epic repository and bind planners to that absolute checkout and the verified default-branch revision. Scope GitHub reads and PR writes to the resolved host and repository. Use `gh issue view` and the paginated `repos/<owner>/<repo>/issues/<number>/sub_issues` endpoint. Use the epic's issue checklist when it has no sub-issues. Read issue bodies, check status and merged work, and plan the remaining scope.
-2. Map the dependencies and the contract each issue supplies or consumes. Give each downstream planner the validated upstream contracts. Default to one PR per issue in the epic repository. Surface proposed splits, cycles, ambiguous stack order, and contracts requiring added scope before approval. Pause affected issues and their dependents until the developer resolves the gap. Submit changed plans and affected downstream plans to fresh validation.
-3. Present the dependency and merge order with the unchanged, independently validated plans for one approval using the host's global approval mechanism. In Codex Default mode, wait for explicit developer approval. Keep the repository and GitHub read-only until approval. Apply the global workflow's scope and approval rules again if implementation needs additional scope.
+1. Resolve the epic repository and load the epic and its GitHub sub-issues, or its issue checklist when no sub-issues exist. Check each issue body and merged work to identify the remaining work. Default to one PR per issue.
+2. Map dependency contracts, the issue requirements that authorize them, and the proposed stack order. Start each planning wave with issues whose upstream contracts have passed independent plan validation, and pass those contracts to downstream planners. Escalate cycles, ambiguous stack order, proposed PR splits, and changes that require new scope. Record the developer’s decision on the affected issue and keep its dependents blocked until the contract is settled. Revalidate plans affected by a change to an upstream contract.
+3. Present the dependency graph and merge order alongside the unchanged, independently validated plans for one developer approval. Keep planning read-only. Use the host's global approval mechanism, with explicit approval in chat for Codex Default mode. Keep execution within the approved issue plans and scope decisions.
+
+## Schedule work
+
+Use issue-keyed assignments and queue ready work within the host's available agent capacity. As agents finish, record the outcome and refill their slots. A capacity error defers the queued assignment. Unrelated issues and stacks can progress when an issue and its dependents are blocked.
+
+In Codex, use the named `agent_type`, unique task names, and the global workflow's fresh reviewer settings. Wait for available capacity with `wait_agent` and resume a completed author with `followup_task`. In Claude Code, use `Agent` with the exact `subagent_type` and the global workflow's fresh reviewer settings. Use its background wait and author resume capabilities when available. Give replacement authors the original issue assignment, approved plan, current revision, and relevant review context when the original author cannot resume.
 
 ## Execute approved work
 
-Record explicit fetch and push remotes. Verify the effective fetch URL with `git remote get-url <fetch-remote>` and every effective push URL with `git remote get-url --push --all <push-remote>`. Match them to the epic repository and the intended head repository respectively. Use the epic repository as the default head repository and require it for stacks. Use the verified remote names for each fetch and push.
+Give each initial coder a separate worktree pinned to its recorded base and a bounded assignment with the approved plan and upstream contracts. Start an approved child layer once its parent has an initial local commit. Keep initial stack commits local until coordinator handoff and review. For dependent PRs, follow [the stack workflow](references/stacks.md) for coordination, publication, and corrections. Run independent PRs through the global workflow directly.
 
-Fetch and record the default branch head as the base for independent issues and bottom stack layers. Create a separate Git worktree and branch for each issue at its recorded base SHA. Verify the worktree, branch, and HEAD before assigning a coder. Pass each reviewer the absolute worktree path and exact base and head SHAs. Apply the global workflow's local review before publishing each draft. Coordinate Libra review, correction budgets, PR metadata, and pending focus comments per PR through that workflow.
+Assign each reviewer an absolute worktree path and exact base and head SHAs. In Claude Code, enter the existing review worktree with `EnterWorktree`, verify its root and head, and launch the fresh named `code_reviewer` there with `high --max-findings all <base>..<head>` as the bundled review arguments. Wait for the result before restoring the original checkout with `ExitWorktree`, keeping the worktree. Serialize these switches and hold the affected review if the host cannot bind it to the target checkout.
 
-On Claude Code, preflight whether `EnterWorktree` and `ExitWorktree` can switch to the assigned checkout and back. Enter the existing issue worktree and verify its root and head. Launch the fresh named `code_reviewer` and tell it to pass `high --max-findings all <base>..<head>` to its bundled review skill. Wait for that review before restoring the original checkout and keep the issue worktree. Serialize these checkout switches and keep other assignments pinned to their absolute paths. Hold the affected review and publication if the host cannot bind the reviewer.
+## Hand off the epic
 
-## Publish dependent stacks
-
-Preflight `gh stack link`, repository stack support, and writable head branches in the same repository before starting dependent work. Hold the affected stack when a prerequisite is unavailable. Process each stack bottom to top while independent issues and stacks proceed concurrently. Once the parent's review and corrections settle on a verified published head, use that SHA as the child's implementation base and the parent's branch as the child's PR base.
-
-As soon as a locally reviewed child draft exists, link and verify the published prefix before waiting for that child's Libra result. Match each existing full PR URL's host, owner, repository, and number to the recorded stack. Require each new member to be open and eligible for linkage, with neither a queued merge nor auto-merge enabled. Pass the URLs in bottom-to-top order.
-
-```sh
-GH_REPO=<host>/<owner>/<repo> gh stack link --base <default-branch> <full-pr-urls-in-order>
-```
-
-Verify repository, base refs, head SHAs, and draft states before and after linkage. Confirm ordered membership with `gh api --hostname <host> 'repos/<owner>/<repo>/stacks?pull_request=<number>'`. Keep new stack PRs in draft until all planned members are linked and verified, then apply the global readiness rules. Preserve any ready state set by the developer.
-
-Recheck live refs, reviewed comparisons, and expected membership for the affected PR and its published ancestors before advancing a child, marking ready, adding pending focus comments, or handing off. For a PR targeting the default branch, compare its live effective merge base with the recorded review base. A trunk advance with the same head and merge base preserves the review. Report any GitHub rebase requirement separately. For a child layer, require the expected parent SHA and ancestry. Reconcile changed comparisons before publication and repeat checks and local review. If a published comparison or membership changes unexpectedly, or a parent becomes ineligible before linkage, preserve the affected PR's published state and hold its descendants while it is unsettled. Report the blocker and continue unrelated work.
-
-Apply the global issue reference rules and use `Part of #<epic>` to reference the epic. Use `Closes #<epic>` instead only on the designated final PR in an approved merge order that completes the epic. Flag issue and epic closure for verification when a PR targets a stack branch. Report the merge order and each PR's global workflow handoff.
+Use `Part of #<epic>` alongside the global issue reference. Use `Closes #<epic>` only for the designated final PR when merging in the approved order completes the epic. Flag issue and epic closure for verification when a PR targets a stack branch. Report the merge order, any blocked items, and each PR's global workflow handoff. Leave merges to the developer.
