@@ -1,8 +1,8 @@
 ---
 name: coder
 description: "Implementation-focused coding agent for bounded source changes, fixes, tests, and proportional validation with repository reuse."
-model: opus
-effort: high
+model: claude-fable-5-2
+effort: max
 skills:
   - coder
 ---
